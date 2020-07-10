@@ -17,14 +17,19 @@ public class MMediaPlayer {
     private Surface surface;
     private VideoInfo videoInfo;
 
+    private IMediaCallback iMediaCallback;
+
+    public void setiMediaCallback(IMediaCallback iMediaCallback) {
+        this.iMediaCallback = iMediaCallback;
+    }
+
     public void prepare() throws IOException {
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mMediaPlayer.setOnCompletionListener(this.onCompletionListener);
-        mMediaPlayer.setOnErrorListener(this.onErrorListener);
-        mMediaPlayer.setOnPreparedListener(this.onPreparedListener);
         mMediaPlayer.setDataSource(videoInfo.path);
         mMediaPlayer.prepare();
+        if(iMediaCallback != null) iMediaCallback.onVideoPrepare(videoInfo);
     }
 
     public void setSurface(Surface surface) {
@@ -34,10 +39,22 @@ public class MMediaPlayer {
 
     public void start() {
         mMediaPlayer.start();
+        if(iMediaCallback != null) iMediaCallback.onVideoStart(mMediaPlayer.getCurrentPosition());
     }
 
+    public int getCurrentPosition() {
+        return mMediaPlayer.getCurrentPosition();
+    }
+
+    public int getDuration() {
+        return mMediaPlayer.getDuration();
+    }
     public void pause() {
         mMediaPlayer.pause();
+    }
+    // 毫秒
+    public void seekTo(int msec) {
+        mMediaPlayer.seekTo(msec);
     }
 
     public boolean isPlaying() {
@@ -53,41 +70,23 @@ public class MMediaPlayer {
     }
 
     // 设置视频播放源
-    public void setDataSource(String path) {
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        retriever.setDataSource(path);
-        String rotation = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
-        String width = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
-        String height = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
-        String duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-
-        videoInfo = new VideoInfo();
-        videoInfo.path = path;
-        videoInfo.rotation = Integer.parseInt(rotation);
-        videoInfo.width = Integer.parseInt(width);
-        videoInfo.height = Integer.parseInt(height);
-        videoInfo.duration = Integer.parseInt(duration);
+    public void setDataSource(VideoInfo videoInfo) {
+        this.videoInfo = videoInfo;
     }
 
     private MediaPlayer.OnCompletionListener onCompletionListener = new MediaPlayer.OnCompletionListener() {
         @Override
         public void onCompletion(MediaPlayer mp) {
-
+            if(iMediaCallback != null) iMediaCallback.onVideoCompletion();
         }
     };
 
-    private MediaPlayer.OnErrorListener onErrorListener = new MediaPlayer.OnErrorListener() {
-        @Override
-        public boolean onError(MediaPlayer mp, int what, int extra) {
-            return false;
-        }
-    };
-    private MediaPlayer.OnPreparedListener onPreparedListener = new MediaPlayer.OnPreparedListener() {
-        @Override
-        public void onPrepared(MediaPlayer mp) {
 
-        }
-    };
+    public interface IMediaCallback {
+        void onVideoPrepare(VideoInfo videoInfo);
+        void onVideoStart(int duration);
+        void onVideoCompletion();
+    }
 
 
 }

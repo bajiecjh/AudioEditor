@@ -20,6 +20,7 @@ public enum MatrixUtils {
 
     /**
      * use {@link #getMatrix} instead
+     * 通过传入图片宽高和预览宽高，计算变换矩阵，得到的变换矩阵是预览类似ImageView的centerCrop效果
      */
     public static void getShowMatrix(float[] matrix,int imgWidth,int imgHeight,int viewWidth,int
         viewHeight){
@@ -29,7 +30,8 @@ public enum MatrixUtils {
             float[] projection=new float[16];
             float[] camera=new float[16];
             if(sWhImg>sWhView){
-                Matrix.orthoM(projection,0,-sWhView/sWhImg,sWhView/sWhImg,-1,1,1,3);
+//                Matrix.orthoM(projection,0,-sWhView/sWhImg,sWhView/sWhImg,-1,1,1,3);
+                Matrix.orthoM(projection,0,-1,1,-sWhImg/sWhView,sWhImg/sWhView,1,3);
             }else{
                 Matrix.orthoM(projection,0,-1,1,-sWhImg/sWhView,sWhImg/sWhView,1,3);
             }

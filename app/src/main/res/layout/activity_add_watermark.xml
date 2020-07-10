@@ -5,44 +5,175 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.activity.MainActivity"
-    android:background="@color/picture_color_blue">
+    android:background="@color/colorPrimaryDark">
 
     <com.bajie.audio.view.widget.ActivityHeader
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:RightText="完成"
         app:Title="添加水印"
-        app:RightText="完成">
+        app:layout_constraintTop_toTopOf="parent">
 
     </com.bajie.audio.view.widget.ActivityHeader>
 
     <com.bajie.audio.view.widget.VideoPreviewView
         android:id="@+id/video_preview"
-        android:layout_width="match_parent"
-        android:layout_height="500dp"
-        app:layout_constraintTop_toBottomOf="@id/title_bar"/>
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/ll_bottom"
+        app:layout_constraintTop_toBottomOf="@+id/title_bar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
+    <!--暂停-->
     <ImageView
         android:id="@+id/iv_pause"
-        android:layout_width="wrap_content"
+        android:layout_width="50dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toBottomOf="@id/video_preview"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:src="@mipmap/icon_pause"
-        />
+        android:src="@mipmap/icon_pause" />
 
-<!--    <ImageView-->
-<!--        android:id="@+id/iv_play"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginBottom="20dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/video_preview"-->
-<!--        app:layout_constraintLeft_toLeftOf="parent"-->
-<!--        app:layout_constraintRight_toRightOf="parent"-->
-<!--        android:src="@mipmap/icon_play" />-->
+    <!--play-->
+    <ImageView
+        android:id="@+id/iv_play"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/video_preview"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:src="@mipmap/icon_play"
+        android:visibility="invisible"/>
+
+    <!--pre-->
+    <ImageView
+        android:id="@+id/iv_pre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="30dp"
+        app:layout_constraintBottom_toBottomOf="@id/video_preview"
+        app:layout_constraintRight_toLeftOf="@+id/iv_pause"
+        android:src="@mipmap/icon_pre"/>
+
+    <!--next-->
+    <ImageView
+        android:id="@+id/iv_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="30dp"
+        app:layout_constraintBottom_toBottomOf="@id/video_preview"
+        app:layout_constraintLeft_toRightOf="@+id/iv_pause"
+        android:src="@mipmap/icon_next"/>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/ll_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/video_preview"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:background="@color/black">
+
+        <!--    文字-->
+        <include
+            android:id="@+id/item_text"
+            layout="@layout/item_add_watermark"
+            android:layout_width="wrap_content"
+            android:layout_height="55dp"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintBottom_toTopOf="@+id/sv_frames"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!--图片-->
+        <include
+            android:id="@+id/item_image"
+            layout="@layout/item_add_watermark"
+            android:layout_width="wrap_content"
+            android:layout_height="55dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintBottom_toTopOf="@+id/sv_frames"
+            app:layout_constraintRight_toLeftOf="@+id/item_text"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <!--贴图-->
+        <include
+            android:id="@+id/item_sticker"
+            layout="@layout/item_add_watermark"
+            android:layout_width="wrap_content"
+            android:layout_height="55dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintBottom_toTopOf="@+id/sv_frames"
+            app:layout_constraintLeft_toRightOf="@+id/item_text"
+            app:layout_constraintTop_toTopOf="parent"/>
+        
+
+        <HorizontalScrollView
+            android:id="@+id/sv_frames"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
+            android:scrollbars="none"
+            android:fillViewport="true"
+            app:layout_constraintTop_toBottomOf="@+id/item_image"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:background="@color/black">
+            <LinearLayout
+                android:id="@+id/ll_frames"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
+        <View
+            android:layout_width="4dp"
+            android:layout_height="60dp"
+            android:background="@drawable/shap_white_line"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/sv_frames"
+            app:layout_constraintBottom_toBottomOf="@+id/sv_frames"/>
+        <TextView
+            android:id="@+id/tv_current_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00"
+            android:textColor="@color/white"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="20dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sv_frames"/>
+        <TextView
+            android:id="@+id/tv_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="总长 00:00"
+            android:textColor="@color/white"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="20dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sv_frames"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

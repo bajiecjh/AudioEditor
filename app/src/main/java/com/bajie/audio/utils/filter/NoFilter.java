@@ -27,7 +27,7 @@ public class NoFilter extends AFilter {
     protected void onClear() {
         Log.e("thread", "---onClear？ 1  "+ Thread.currentThread());
 
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        GLES20.glClearColor(37, 38, 43, 1);
         Log.e("thread", "---onClear？ 2  "+ Thread.currentThread());
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         Log.e("thread", "---onClear？ 3  ");

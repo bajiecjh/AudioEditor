@@ -79,7 +79,7 @@ public abstract class AFilter {
         1.0f,  -1.0f,
     };
 
-    //纹理坐标
+    //纹理坐标-相机预览时对片元着色器使用的是纹理texture而不是颜色color
     private float[] coord={
         0.0f, 0.0f,
         0.0f,  1.0f,
@@ -106,17 +106,17 @@ public abstract class AFilter {
     }
 
     public void draw(){
-        Log.e("videoo", "---卡主了？ 16  "+getClass());
+//        Log.e("videoo", "---卡主了？ 16  "+getClass());
         onClear();
-        Log.e("videoo", "---卡主了？ 17");
+//        Log.e("videoo", "---卡主了？ 17");
         onUseProgram();
-        Log.e("videoo", "---卡主了？ 18");
+//        Log.e("videoo", "---卡主了？ 18");
         onSetExpandData();
-        Log.e("videoo", "---卡主了？ 19");
+//        Log.e("videoo", "---卡主了？ 19");
         onBindTexture();
-        Log.e("videoo", "---卡主了？ 20");
+//        Log.e("videoo", "---卡主了？ 20");
         onDraw();
-        Log.e("videoo", "---卡主了？ 21");
+//        Log.e("videoo", "---卡主了？ 21");
     }
 
     public final void setMatrix(float[] matrix){
@@ -206,6 +206,10 @@ public abstract class AFilter {
 
     protected final void createProgram(String vertex, String fragment){
         mProgram= uCreateGlProgram(vertex,fragment);
+        /**
+         * 获取shader代码中的变量索引，用于在后面的绘制代码中进行赋值
+         * 变量索引在glsl程式生命周期内都是固定的，只需要获取一次
+         */
         mHPosition= GLES20.glGetAttribLocation(mProgram, "vPosition");
         mHCoord= GLES20.glGetAttribLocation(mProgram,"vCoord");
         mHMatrix= GLES20.glGetUniformLocation(mProgram,"vMatrix");
@@ -220,11 +224,15 @@ public abstract class AFilter {
      * Buffer初始化
      */
     protected void initBuffer(){
+
+        // 装载顶点坐标
         ByteBuffer a= ByteBuffer.allocateDirect(32);
         a.order(ByteOrder.nativeOrder());
         mVerBuffer=a.asFloatBuffer();
         mVerBuffer.put(pos);
         mVerBuffer.position(0);
+
+        // 装载纹理坐标
         ByteBuffer b= ByteBuffer.allocateDirect(32);
         b.order(ByteOrder.nativeOrder());
         mTexBuffer=b.asFloatBuffer();
@@ -240,11 +248,16 @@ public abstract class AFilter {
      * 启用顶点坐标和纹理坐标进行绘制
      */
     protected void onDraw(){
+        // 啓用vertex
         GLES20.glEnableVertexAttribArray(mHPosition);
+        // 綁定vertex坐標值，调用glVertexAttribPointer告诉opengl，它可以再缓冲区mVerBuffer中获取vPositioni的数据
+        // 使用一次glEnableVertexAttribArray方法就要使用一次glVertexAttribPointer方法
         GLES20.glVertexAttribPointer(mHPosition,2, GLES20.GL_FLOAT, false, 0,mVerBuffer);
         GLES20.glEnableVertexAttribArray(mHCoord);
         GLES20.glVertexAttribPointer(mHCoord, 2, GLES20.GL_FLOAT, false, 0, mTexBuffer);
+        // 通过GLE20.glDrawArrays或者GLE20.glDrawElements开始绘制
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP,0,4);
+        // 使用了glEnableVertexAttribArray方法就必须使用glDisableVertexAttribArray方法
         GLES20.glDisableVertexAttribArray(mHPosition);
         GLES20.glDisableVertexAttribArray(mHCoord);
     }
@@ -254,8 +267,9 @@ public abstract class AFilter {
      */
     protected void onClear(){
 
-        GLES20.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+//        GLES20.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
+        GLES20.glClearColor(0.1450f, 0.1490f, 0.1686f, 1f);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
     }
 
@@ -299,6 +313,7 @@ public abstract class AFilter {
             GLES20.glLinkProgram(program);
             int[] linkStatus=new int[1];
             GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS,linkStatus,0);
+            // 判断链接是否成功
             if(linkStatus[0]!= GLES20.GL_TRUE){
                 glError(1,"Could not link program:"+ GLES20.glGetProgramInfoLog(program));
                 GLES20.glDeleteProgram(program);

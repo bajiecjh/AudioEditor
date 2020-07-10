@@ -2,15 +2,19 @@
 <resources>
     <color name="colorPrimary">#25262b</color>
     <color name="colorPrimaryDark">#25262b</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="colorAccent">#ffffff</color>
 
     <color name="c_0d0d0d">#0d0d0d</color>
+    <color name="c_000000">#000000</color>
     <color name="c_adadad">#adadad</color>
     <color name="c_f5f5f5">#f5f5f5</color>
     <color name="c_ffffff">#ffffff</color>
+    <color name="c_50000000">#50000000</color>
 
     <color name="black_text_color">@color/c_0d0d0d</color>
     <color name="gray_text_color">@color/c_adadad</color>
     <color name="gray_line_color">@color/c_f5f5f5</color>
     <color name="white">@color/c_ffffff</color>
+    <color name="black">@color/c_000000</color>
+    <color name="dialog_bg">@color/c_50000000</color>
 </resources>

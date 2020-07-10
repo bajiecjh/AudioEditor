@@ -1,9 +1,16 @@
 package com.bajie.audio.entity;
 
+import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+
 /**
  * bajie on 2020/6/19 15:56
  */
-public class VideoInfo {
+public class VideoInfo implements Serializable {
     public String path; // 路径
     public int rotation; // 旋转角度
     public int width; // 宽
@@ -17,4 +24,7 @@ public class VideoInfo {
     public int expHeight;   // 期望高度
     public int cutPoint;    // 剪切的开始点
     public int cutDuratioin;    // 剪切的时长
+
+    public ArrayList<String> frames;
+
 }
