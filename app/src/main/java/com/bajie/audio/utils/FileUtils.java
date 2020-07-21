@@ -13,7 +13,7 @@ import java.io.IOException;
 public class FileUtils {
 
     public static String saveBitmapToDir(Context context,String fileName, Bitmap bitmap) throws IOException {
-        String filePath = context.getExternalFilesDir(null).getAbsolutePath() + "/" + fileName + ".png";
+        String filePath = getStoragePath(context) + "/" + fileName + ".png";
         File file = new File(filePath);
         file.createNewFile();
         FileOutputStream out = new FileOutputStream(file);
@@ -22,5 +22,9 @@ public class FileUtils {
         out.close();
         return filePath;
 
+    }
+
+    public static String getStoragePath(Context context) {
+        return context.getExternalFilesDir(null).getAbsolutePath();
     }
 }

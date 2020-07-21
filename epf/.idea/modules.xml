@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../VideoClipEditViewTest-master.iml" filepath="$PROJECT_DIR$/../VideoClipEditViewTest-master.iml" group="VideoClipEditViewTest-master" />
+      <module fileurl="file://$PROJECT_DIR$/../app/app.iml" filepath="$PROJECT_DIR$/../app/app.iml" group="VideoClipEditViewTest-master/app" />
+      <module fileurl="file://$PROJECT_DIR$/epf.iml" filepath="$PROJECT_DIR$/epf.iml" group="VideoClipEditViewTest-master/epf" />
+      <module fileurl="file://$PROJECT_DIR$/../filterlibrary/filterlibrary.iml" filepath="$PROJECT_DIR$/../filterlibrary/filterlibrary.iml" group="VideoClipEditViewTest-master/filterlibrary" />
+      <module fileurl="file://$PROJECT_DIR$/../library/library.iml" filepath="$PROJECT_DIR$/../library/library.iml" group="VideoClipEditViewTest-master/library" />
+    </modules>
+  </component>
+</project>

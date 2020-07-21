@@ -5,14 +5,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaCodec;
+import android.media.MediaExtractor;
+import android.media.MediaFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,8 +33,13 @@ import com.bajie.audio.entity.VideoInfo;
 import com.bajie.audio.utils.DensityUtil;
 import com.bajie.audio.utils.MMediaPlayer;
 import com.bajie.audio.utils.TimeUtils;
+import com.bajie.audio.utils.Utils;
 import com.bajie.audio.view.widget.ActivityHeader;
+import com.bajie.audio.view.widget.StickerView;
 import com.bajie.audio.view.widget.VideoPreviewView;
+
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 
@@ -48,6 +58,8 @@ public class AddWatermarkActivity extends BaseActivity {
 
     @BindView(R.id.video_preview)
     VideoPreviewView mVideoPreview;
+    @BindView(R.id.frame_layout)
+    FrameLayout mFrameLayout;
     @BindView(R.id.title_bar)
     ActivityHeader mTitleBar;
     @BindView(R.id.ll_frames)
@@ -62,11 +74,19 @@ public class AddWatermarkActivity extends BaseActivity {
     ImageView ivPause;
     @BindView(R.id.iv_play)
     ImageView ivPlay;
+    @BindView(R.id.item_text)
+    View itemText;
+    @BindView(R.id.item_image)
+    View itemImage;
+    @BindView(R.id.item_sticker)
+    View itemSticker;
+
 
 
     private VideoInfo mVideoInfo;
     private int framesWidth;    // 滚动条图片总宽度,单位px
     private int halfScreenWidth;
+    StickerView stickerView;    // 放置水印的画布
 
 
     Handler handler = new Handler() {
@@ -105,6 +125,7 @@ public class AddWatermarkActivity extends BaseActivity {
         onClickPause();             // 点击暂停
         onClickPlay();              // 点击播放
         addScrollCallback();        // 滚动条滚动监听
+        initAddWatermarkAction();   // 点击添加水印按钮响应
     }
 
     private void addVideoPlayerCallback() {
@@ -154,7 +175,11 @@ public class AddWatermarkActivity extends BaseActivity {
 
                     int seekTo = (svFrames.getScrollX() * mVideoPreview.getDuration()) / framesWidth;
                     mVideoPreview.seekTo(seekTo, SEEK_CLOSEST);
-                    System.out.println("bybajie: ACTION_MOVE seekTo=" + seekTo);
+//                    System.out.println("bybajie: ACTION_MOVE seekTo=" + seekTo);
+                }
+                if(event.getAction() == MotionEvent.ACTION_MOVE) {
+                }
+                if(event.getAction() == MotionEvent.ACTION_UP) {
                 }
                 return false;
             }
@@ -178,7 +203,7 @@ public class AddWatermarkActivity extends BaseActivity {
     /** 初始化图片滚动条 **/
     private void initFrames() {
         // 为了滚动， 前面和后面各添加一张和背景同色的单色图片，宽度是屏幕宽度的一半
-        halfScreenWidth = getScreenWidth() / 2;
+        halfScreenWidth = getResources().getDisplayMetrics().widthPixels / 2;
         addBlackImgToScroll(halfScreenWidth);
         int frameSize = mVideoInfo.frames.size();
         for(int i = 0; i < frameSize; i ++) {
@@ -191,13 +216,8 @@ public class AddWatermarkActivity extends BaseActivity {
         addBlackImgToScroll(halfScreenWidth);
         framesWidth = DensityUtil.dip2px(this,frameSize * SCROLL_IMG_WIDTH_DP + SCROLL_IMG_MARGIN_DP * (frameSize-1));
     }
-    /** 获取屏幕宽度 **/
-    private int getScreenWidth() {
-        int screenWidth;
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        screenWidth = displayMetrics.widthPixels;
-        return screenWidth;
-    }
+
+
     /** 添加一张屏幕一半宽度的黑色单色图片到滚动条中 **/
     private void addBlackImgToScroll(int halfScreenWidth) {
         ImageView imageView = createImageView(halfScreenWidth);
@@ -212,6 +232,25 @@ public class AddWatermarkActivity extends BaseActivity {
         imageView.setLayoutParams(layoutParams);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         return imageView;
+    }
+
+    private void initAddWatermarkAction() {
+        ((TextView)itemImage.findViewById(R.id.tv)).setText("图片");
+        ((TextView)itemSticker.findViewById(R.id.tv)).setText("贴纸");
+        ((ImageView)itemSticker.findViewById(R.id.iv)).setImageResource(R.mipmap.icon_sticker);
+        ((ImageView)itemImage.findViewById(R.id.iv)).setImageResource(R.mipmap.icon_image);
+
+        itemSticker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(stickerView == null) {
+                    stickerView = new StickerView(AddWatermarkActivity.this, false);
+                    stickerView.setBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.img_sticker));
+                    mFrameLayout.addView(stickerView);
+                }
+
+            }
+        });
     }
 
     private void initDuration() {

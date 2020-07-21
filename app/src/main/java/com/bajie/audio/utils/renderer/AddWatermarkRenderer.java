@@ -8,7 +8,7 @@ import android.opengl.GLSurfaceView;
 import android.view.Surface;
 
 import com.bajie.audio.entity.VideoInfo;
-import com.bajie.audio.utils.filter.RotationOESFilter;
+import com.bajie.audio.utils.opengl.filter.RotationOESFilter;
 import com.bajie.audio.utils.opengl.MatrixUtils;
 
 import javax.microedition.khronos.egl.EGLConfig;

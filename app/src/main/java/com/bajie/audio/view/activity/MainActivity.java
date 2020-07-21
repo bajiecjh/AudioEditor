@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bajie.audio.Config;
 import com.bajie.audio.R;
 import com.bajie.audio.adapter.MainPageAdapter;
 import com.bajie.audio.base.BaseActivity;
@@ -21,6 +22,7 @@ import com.bajie.audio.entity.MainViewEntity;
 import com.bajie.audio.entity.VideoInfo;
 import com.bajie.audio.utils.FileUtils;
 import com.bajie.audio.utils.GlideEngine;
+import com.daasuu.mp4compose.composer.Mp4Composer;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -122,7 +124,7 @@ public class MainActivity extends BaseActivity {
     }
 
 
-
+    /** 获取视频信息 **/
     private void getVideoInfo(String filePath) {
         new Thread() {
             @Override
@@ -163,24 +165,34 @@ public class MainActivity extends BaseActivity {
                 videoInfo.duration = Integer.parseInt(duration);
                 videoInfo.frames = frames;
 
-                Message msg = new Message();
-                msg.what = HANDLE_MSG_GET_VIDEO_INFO;
-                msg.obj = videoInfo;
-                handler.sendMessage(msg);
+                String newMp4Path = FileUtils.getStoragePath(MainActivity.this) + Config.DEFAULT_PROCESS_VIDEO_PATH;
+                new Mp4Composer(filePath, newMp4Path).frameRate(5).listener(new Mp4Composer.Listener() {
+                    @Override
+                    public void onProgress(double progress) {
+
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        videoInfo.path = newMp4Path;
+                        Message msg = new Message();
+                        msg.what = HANDLE_MSG_GET_VIDEO_INFO;
+                        msg.obj = videoInfo;
+                        handler.sendMessage(msg);
+                    }
+
+                    @Override
+                    public void onCanceled() {
+
+                    }
+
+                    @Override
+                    public void onFailed(Exception exception) {
+
+                    }
+                }).start();
             }
         }.start();
-    }
-
-    private String saveBitmapToDir(String fileName,Bitmap bitmap) throws IOException {
-        String filePath = getExternalFilesDir(null).getAbsolutePath() + "/" + fileName + ".png";
-        File file = new File(filePath);
-        file.createNewFile();
-        FileOutputStream out = new FileOutputStream(file);
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-        out.flush();
-        out.close();
-        return filePath;
-
     }
 
 }

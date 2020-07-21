@@ -1,2 +1,2 @@
 rootProject.name='Audio'
-include ':app'
+include ':app', ':epf', ':library'

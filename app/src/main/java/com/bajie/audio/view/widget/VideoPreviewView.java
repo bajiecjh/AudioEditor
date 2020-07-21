@@ -140,4 +140,8 @@ public class VideoPreviewView extends GLSurfaceView {
             addWatermarkRenderer.onDrawFrame(gl);
         }
     };
+
+    public Surface getSurface() {
+        return addWatermarkRenderer.surface;
+    }
 }
