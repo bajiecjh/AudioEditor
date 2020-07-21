@@ -86,7 +86,7 @@ public class AddWatermarkActivity extends BaseActivity {
     private VideoInfo mVideoInfo;
     private int framesWidth;    // 滚动条图片总宽度,单位px
     private int halfScreenWidth;
-    StickerView stickerView;    // 放置水印的画布
+    StickerView mStickerView;    // 放置水印的画布
 
 
     Handler handler = new Handler() {
@@ -243,10 +243,19 @@ public class AddWatermarkActivity extends BaseActivity {
         itemSticker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(stickerView == null) {
-                    stickerView = new StickerView(AddWatermarkActivity.this, false);
-                    stickerView.setBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.img_sticker));
-                    mFrameLayout.addView(stickerView);
+                if(mStickerView == null) {
+                    mStickerView = new StickerView(AddWatermarkActivity.this, false);
+                    mStickerView.setBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.img_sticker));
+                    mFrameLayout.addView(mStickerView);
+                    mStickerView.setOnStickerListener(new StickerView.IOnStickerListener() {
+                        @Override
+                        public void onTouchDown(StickerView stickerView) { }
+
+                        @Override
+                        public void onTouchDelete(StickerView stickerView) {
+                            mStickerView = null;
+                        }
+                    });
                 }
 
             }
